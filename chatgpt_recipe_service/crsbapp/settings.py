@@ -38,11 +38,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
+    'corsheaders',
     'post',
     'user',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -51,6 +54,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'crsbapp.urls'
 
@@ -73,16 +79,19 @@ TEMPLATES = [
 WSGI_APPLICATION = 'crsbapp.wsgi.application'
 
 # REST Framework
-# REST_FRAMEWORK = {
-#     'DEFAULT_THROTTLE_CLASS': {
-#         'rest_framework.throttling.AnonRateThrottle',
-#         'rest_framework.throttling.UserRateThrottle'
-#     },
-#     'DEFAULT_THROTTLE_RATES': {
-#         'anon': '5/hour', # sec, min, hour, day
-#         'user': '20/hour',
-#     }
-# }
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    # 'DEFAULT_THROTTLE_CLASS': {
+    #     'rest_framework.throttling.AnonRateThrottle',
+    #     'rest_framework.throttling.UserRateThrottle'
+    # },
+    # 'DEFAULT_THROTTLE_RATES': {
+    #     'anon': '5/hour',
+    #     'user': '20/hour',
+    # }
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

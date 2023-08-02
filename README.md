@@ -2,7 +2,7 @@
 ChatGPT와 Django Rest Framework를 활용한 요리 레시피 서비스
 
 ## 0. 연동
-ChatRecipeServiceF (github pages) 프론트엔드 레포지토리와 연동됨   
+ChatRecipeServiceF (github pages) 프론트엔드 레포지토리와 연동 예정   
 link: [Frontend Repository](https://github.com/Deeklming/ChatRecipeServiceF)   
 link: [Frontend Site](https://deeklming.github.io/ChatRecipeServiceF/)
 

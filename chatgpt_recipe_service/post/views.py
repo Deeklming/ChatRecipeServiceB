@@ -1,22 +1,47 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import status
+from rest_framework import status, viewsets
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import get_object_or_404
+from rest_framework.response import Response
+
 from .models import Post
-from .serializers import PostSerializer
+from .serializers import PostSerializer, PostCreateSerializer
+from .permissions import NewReadOnly
 
-# Create your views here.
-# class RestIndex(APIView):
-#     def get(self, req):
-#         posts = Post.objects.all()
-#         serialized_posts = PostSerializer(posts, many=True) # 직렬화
-#         return Response(serialized_posts.data)
 
-# class RestWrite(APIView):
-#     def post(self, req):
-#         serializer = PostSerializer(data=req.data) # 역직렬화
-#         if serializer.is_valid():
-#             post = serializer.save(commit=False)
-#             post.writer = req.user
-#             post.save()
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# @api_view(['GET'])
+class PostsList(APIView):
+    def get(self, req):
+        posts = Post.objects.all()
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+# class PostViewSet(viewsets.ModelViewSet):
+#     queryset = Post.objects.all()
+#     permission_classes = [NewReadOnly]
+#     # filter_backends = [DjangoFilterBackend]
+#     filterset_fields = ['user', 'likes']
+
+#     def get_serializer_class(self):
+#         if self.action == 'list' or 'retrieve':
+#             return PostSerializer
+#         return PostCreateSerializer
+
+#     # def perform_create(self, serializer):
+#     #     profile = Profile.objects.get(user=self.req.user)
+#     #     serializer.save(author=self.req.user, profile=profile)
+
+
+# @api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+# def like_post(req, pk):
+#     post = get_object_or_404(Post, pk=pk)
+#     if req.user in post.likes.all():
+#         post.likes.remove(req.user)
+#     else:
+#         post.likes.add(req.user)
+
+#     return Response({'status': 'ok'})
