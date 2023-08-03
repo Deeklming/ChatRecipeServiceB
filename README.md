@@ -7,11 +7,12 @@ link: [Frontend Repository](https://github.com/Deeklming/ChatRecipeServiceF)
 link: [Frontend Site](https://deeklming.github.io/ChatRecipeServiceF/)
 
 ## 1. 기능적 목표 및 진행상황
-1. 포스트 메인 보기 (진행중)
-2. 포스트 CRUD
-3. 회원가입
-4. 로그인 / 로그아웃
-5. chatGPT 연동
+1. 포스트 메인 보기
+2. 포스트 CRUD (완료)
+3. 회원가입 (완료)
+4. 로그인 / 로그아웃 (완료)
+5. 유저와 포스트 연결
+6. chatGPT 연동
 
 ## 2. 개발 환경
 - Python 3.11.2
