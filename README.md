@@ -8,9 +8,9 @@
 5. 유저와 포스트 연결
 
 ## 2. 개발 환경
-- Python 3.11.2
-- Django 4.2.3
-- Django REST framework 3.14.0
+- Python
+- Django
+- Django REST framework
 
 ## 3. ERD
 
