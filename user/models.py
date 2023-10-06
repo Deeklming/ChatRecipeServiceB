@@ -42,9 +42,10 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     id = models.AutoField(primary_key=True)
     email = models.EmailField(max_length=100, null=False, blank=False, unique=True)
-    nickname = models.CharField(max_length=100, null=False, blank=False, unique=True)
+    nickname = models.CharField(max_length=50, null=False, blank=False, unique=True)
     description = models.TextField(null=True, blank=True)
-    phone_number = RegexValidator(regex = r'^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$')
+    phone_number_regex = RegexValidator(regex = r'^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$')
+    phone_number = models.CharField(validators = [phone_number_regex], max_length = 13, unique = True)
     image = models.ImageField(upload_to='profile_img', null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
