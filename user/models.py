@@ -5,13 +5,15 @@ from django.core.validators import RegexValidator
 # Create your models here.
 class UserManager(BaseUserManager):
     def create_user(self, email, password, nickname=None):
+        use_in_migrations = True
+
         if not email:
             raise ValueError('must have user email')
         if not password:
             raise ValueError('must have user password')
 
         email = self.normalize_email(email)
-        nickname = email.split('@')[0]
+        nickname = email.split('@')[0] if nickname == None else nickname
         user = self.model(
             email = email,
             password = password,
@@ -23,6 +25,8 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password, nickname=None):
+        email = self.normalize_email(email)
+        nickname = email.split('@')[0] if nickname == None else nickname
         user = self.create_user(
             email = email,
             password = password,
@@ -30,6 +34,7 @@ class UserManager(BaseUserManager):
         )
 
         user.is_admin = True
+        user.is_superuser = True
         user.save(using=self._db)
         return user
 
@@ -48,12 +53,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_admin = models.BooleanField(default=False)
 
     # 헬퍼 클래스 사용
-    UserManager()
+    objects = UserManager()
 
     # 사용자의 username field는 nickname으로 설정
     USERNAME_FIELD = 'nickname'
     # 필수로 작성해야하는 field
-    REQUIRED_FIELDS = ['email', 'name', 'nickname']
+    REQUIRED_FIELDS = ['email']
 
     def __str__(self):
         return self.nickname
