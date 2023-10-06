@@ -62,3 +62,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.nickname
+    
+    @property
+    def is_staff(self):
+        return self.is_admin
