@@ -32,6 +32,8 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
+AUTH_USER_MODEL = 'user.User'
+
 ALLOWED_HOSTS = []
 
 # Application definition
@@ -44,8 +46,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'ypost',
-    'yuser',
+    'post',
+    'user',
+    'ad',
 ]
 
 MIDDLEWARE = [
