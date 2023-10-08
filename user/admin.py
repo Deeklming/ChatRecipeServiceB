@@ -57,7 +57,7 @@ class UserAdmin(BaseUserAdmin):
     list_display = ('email', 'nickname', 'phone_number', 'created_at', 'is_admin')
     list_filter = ('is_admin', 'is_superuser', 'is_active', 'groups')
     fieldsets = (
-        (None, {'fields': ('email', 'password', 'nickname', 'phone_number', 'description')}),
+        (None, {'fields': ('email', 'password', 'nickname', 'phone_number', 'description', 'image', 'follower')}),
         ('Permissions', {'fields': ('is_admin', 'is_active')}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
@@ -65,7 +65,7 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'password1', 'password2', 'nickname', 'phone_number', 'description'),
+            'fields': ('email', 'password1', 'password2', 'nickname', 'phone_number', 'description', 'image', 'follower'),
         }),
     )
     search_fields = ('email',)
