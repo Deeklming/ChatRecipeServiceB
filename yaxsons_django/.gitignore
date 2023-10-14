@@ -160,7 +160,6 @@ cython_debug/
 #.idea/
 
 
-
 # Created by https://www.gitignore.io
 
 ### OSX ###
@@ -253,4 +252,4 @@ db.sqlite3
 
 
 ### etc
-yaxsonsvenv/
+yssvenvD/
