@@ -45,6 +45,7 @@ YaxsonS는 약(medicine)의 사용 경험을 공유하는 서비스입니다.
 
 ## 4. 프로젝트 설계
 ### 4-1. ERD
+![YaxsonS ERD](https://github.com/Deeklming/YaxsonS/assets/71743128/f6b8660a-8f7d-469e-9928-732da208c407)
 
 ### 4-2. Infra Architecture
 
