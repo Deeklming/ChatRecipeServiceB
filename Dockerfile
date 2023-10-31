@@ -1,9 +1,8 @@
-FROM python:3.11
+FROM python:3.11.6-alpine3.18
 
 WORKDIR /app
 
 COPY . /app
-# COPY ./requirements.txt /app/requirements.txt
 
 RUN pip install --upgrade pip && pip install -r /app/requirements.txt
 
