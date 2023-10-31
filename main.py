@@ -1,8 +1,9 @@
 from fastapi import FastAPI
-from fastapi.responses import RedirectResponse
-
+# from fastapi.responses import RedirectResponse
+from config import LoadSettings
 import uvicorn
 
+config = LoadSettings()()
 app = FastAPI()
 
 # app.include_router(router, prefix="/user")
@@ -15,5 +16,9 @@ app = FastAPI()
 # async def home():
 #     return RedirectResponse(url="/home/")
 
+@app.get("/")
+async def test():
+    return {"2test": "2test ok!"}
+
 if __name__=="__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("main:app", host=config.HOST_IP, port=config.PORT, reload=config.DEBUG)

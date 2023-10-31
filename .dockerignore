@@ -1,0 +1,6 @@
+yxsvenv
+.env
+.env.dev
+.env.prod
+.git
+__pycache__
