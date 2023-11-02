@@ -37,34 +37,23 @@ class Users(BaseModel):
             }
         }
 
+class SignIn(BaseModel):
+    email: EmailStr
+    password: str
+    token: str|None = None
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "email": "email@email.com",
+                "password": "password",
+                "token": "token"
+            }
+        }
+
 
 # class User(SQLModel, table=True):
 #     email: EmailStr = Field(primary_key=True)
 #     password: str
 #     username: str
 #     events: Optional[List[Event]] = Field(sa_column=Column(JSON))
-
-#     class Config:
-#         arbitrary_types_allowed = True
-#         json_schema_extra = {
-#             "example": {
-#                 "email": "fastapi1@packt.com",
-#                 "password": "strong1!!",
-#                 "username": "user1",
-#                 "events": [],
-#             }
-#         }
-
-
-
-# class UserSignIn(BaseModel):
-#     email: EmailStr
-#     password: str
-
-#     class Config:
-#         json_schema_extra = {
-#             "example": {
-#                 "email": "fastapi2@packt.com",
-#                 "password": "strong2!!",
-#             }
-#         }
