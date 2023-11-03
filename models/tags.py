@@ -3,6 +3,7 @@ from pydantic import BaseModel
 
 class Tags(BaseModel):
     id: int
+    category: str
     tag: str
     note: str|None = None
 
@@ -10,6 +11,7 @@ class Tags(BaseModel):
         json_schema_extra = {
             "example": {
                 "id": 1,
+                "category": "category",
                 "tag": "tag",
                 "note": "note, #colorcode"
             }
