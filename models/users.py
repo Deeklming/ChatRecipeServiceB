@@ -1,22 +1,21 @@
 from pydantic import BaseModel, EmailStr
-from datetime import datetime
-from models.tags import Tags
-from models.posts import Posts
-from models.comments import Comments
-# from sqlmodel import JSON, SQLModel, Field, Column
+from datetime import datetime, timezone, timedelta
+from uuid import UUID
+from fastapi import Query
 
-class Users(BaseModel):
-    id: int
+
+class User(BaseModel):
+    id: UUID
     email: EmailStr
-    password: str
-    nickname: str = email.split('@')[0]
+    pw: str
+    nickname: str = Query(min_length=3, max_length=20)
+    country: str
+    follows: dict[str, int|str] = {"count": 0}
+    likes: dict[str, int|str] = {"count": 0}
+    hashtags: list[str]|None = None
     image: str|None = None
     body: str|None = None
-    follows: dict[str, int|str]
-    likes: dict[str, int|Posts|Comments]
-    hashtags: list[Tags]|None = None
-    country: str
-    created_at: datetime = datetime.datetime.now().isoformat(timespec="iso8601")
+    created_at: datetime = datetime.now(timezone.utc)+timedelta(hours=9)
     status: bool = True
 
     class Config:
@@ -39,21 +38,16 @@ class Users(BaseModel):
 
 class SignIn(BaseModel):
     email: EmailStr
-    password: str
+    pw: str
+    nickname: str
     token: str|None = None
 
     class Config:
         json_schema_extra = {
             "example": {
                 "email": "email@email.com",
-                "password": "password",
+                "pw": "password",
+                "nickname": "nickname",
                 "token": "token"
             }
         }
-
-
-# class User(SQLModel, table=True):
-#     email: EmailStr = Field(primary_key=True)
-#     password: str
-#     username: str
-#     events: Optional[List[Event]] = Field(sa_column=Column(JSON))

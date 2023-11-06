@@ -1,21 +1,23 @@
+import uvicorn
 from fastapi import FastAPI
 # from fastapi.responses import RedirectResponse
-from settings import LoadSettings
-import uvicorn
-import dbms.mariaconn as db
+from os import getenv as cfg
+from settings import config_settings
+from dbms.mariadb import create_db, db_test
+from services.users import users_router
 
-config = LoadSettings().get_config()
 app = FastAPI()
 
-# app.include_router(router, prefix="/user")
+app.include_router(users_router, prefix="/users")
 
-# @app.on_event("startup")
-# def on_startup():
-#     db_connect()
+@app.on_event("startup")
+async def on_startup():
+    await create_db()
+    # await db_test()
 
-# @app.get("/")
-# async def home():
-#     return RedirectResponse(url="/home/")
+# # @app.get("/")
+# # async def home():
+# #     return RedirectResponse(url="/home/")
 
 @app.get("/")
 async def test():
@@ -23,4 +25,5 @@ async def test():
 
 
 if __name__=="__main__":
-    uvicorn.run("main:app", host=config.HOST_IP, port=config.PORT, reload=config.DEBUG)
+    config_settings()
+    uvicorn.run("main:app", host=cfg("HOST_IP"), port=int(cfg("PORT")), reload=cfg("DEBUG"))
