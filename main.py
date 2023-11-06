@@ -3,7 +3,8 @@ from fastapi import FastAPI
 # from fastapi.responses import RedirectResponse
 from os import getenv as cfg
 from settings import config_settings
-from dbms.mariadb import create_db, db_test
+from dbms.mariadb import create_db
+from dbms.redis import cache_test
 from services.users import users_router
 
 app = FastAPI()
@@ -13,6 +14,7 @@ app.include_router(users_router, prefix="/users")
 @app.on_event("startup")
 async def on_startup():
     await create_db()
+    await cache_test()
     # await db_test()
 
 # # @app.get("/")

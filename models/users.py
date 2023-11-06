@@ -21,16 +21,16 @@ class User(BaseModel):
     class Config:
         json_schema_extra = {
             "example": {
-                "id": 1,
+                "id": "uuid",
                 "email": "email@email.com",
-                "password": "password",
+                "pw": "password",
                 "nickname": "nickname",
-                "image": "https://url",
-                "body": "self introduction",
+                "country": "i10n",
                 "follows": {"count": 0, "key": "value"},
                 "likes": {"count": 0, "key": "value"},
                 "hashtags": ["tag"],
-                "country": "i10n",
+                "image": "https://url",
+                "body": "self introduction",
                 "created_at": "2023-11-02T13:30:00+09:00", # iso8601
                 "status": True
             }

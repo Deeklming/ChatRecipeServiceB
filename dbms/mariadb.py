@@ -20,7 +20,7 @@ def dbaio(func):
 
 async def create_db():
     await db_create_user()
-    print("[create_db success.]")
+    print("[[create_db success]]")
 
 
 @dbaio

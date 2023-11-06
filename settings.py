@@ -1,7 +1,6 @@
 import dotenv
 from os import getenv as cfg
 
-
 ### env
 def config_settings():
     _mode = cfg("YXSMODE", "dev")
