@@ -1,7 +1,7 @@
-# yaxince
+# YourAccommodation
 
 ```
-yaxince는 약(medicine)의 사용 경험 또는 질병의 치료 경험을 공유하는 오픈 일기 서비스입니다.
+YourAccommodation 은 숙박 예약 프로젝트입니다
 ```
 
 <br>
@@ -11,46 +11,62 @@ yaxince는 약(medicine)의 사용 경험 또는 질병의 치료 경험을 공�
 <br>
 
 ## [목차]
-
-1. [기능](#1-기능)
-2. [링크](#2-링크)
-3. [개발 환경](#3-개발-환경)
+1. [링크](#1-링크)
+2. [개발 환경](#2-개발-환경)
+3. [기능](#3-기능)
 4. [프로젝트 설계](#4-프로젝트-설계)
 
 <br>
 
-## 1. 기능
-
-- membership
-- profile
-- follow
-- post
-- comment
-- like
-- search
-
-<br>
-
-## 2. 링크
+## 1. 링크
 
 <!-- - [1](https://www.notion.so/) -->
 
 <br>
 
-## 3. 개발 환경
+## 2. 개발 환경
+```
+각각의 프레임워크로 같은 기능을 개발합니다
+```
 
-### 3-1. FastAPI
+### 2-1. Flask
+
+- Flask
+
+### 2-2. Django
+
+- Django
+
+### 2-3. FastAPI
 
 - FastAPI
 
-### 3-2. Infra
+### 2-4. Next.js
+
+- Next.js
+
+### 2-5. common
 
 - Docker
-- AWS
+- Redis
+- PostgreSQL
+- React
+- TailwindCSS
 
-### 3-3. DBMS
+<br>
 
-- MariaDB
+## 3. 기능
+
+- 회원가입
+- 로그인 / 로그아웃
+- 프로필
+- 검색
+- 예약
+- 채팅
+- 게시판
+- 게시글
+- 언어
+- 사이트 정보
 
 <br>
 
@@ -58,13 +74,15 @@ yaxince는 약(medicine)의 사용 경험 또는 질병의 치료 경험을 공�
 
 ### 4-1. ERD
 
-![yaxince ERD](https://github.com/Deeklming/yaxince/assets/71743128/afabef4d-7de9-40fc-8619-6a490ac7d744)
+<!-- ![YourAccommodation ERD]() -->
 
 ### 4-2. Infra Architecture
 
+<!-- ![YourAccommodation Infra]() -->
+
 <br>
 
-## developer
+## 개발자
 
 - Deeklming
 
