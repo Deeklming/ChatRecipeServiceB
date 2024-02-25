@@ -2,7 +2,7 @@
 
 ## 설치
 ```bash
-pip install flask flask-sqlalchemy flask-migrate flask-login flask-wtf python-dotenv email-validator
+pip install flask flask-sqlalchemy flask-migrate flask-login flask-wtf python-dotenv email-validator "psycopg[binary,pool]"
 ```
 
 ## 인증서 만들기

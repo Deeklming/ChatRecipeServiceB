@@ -1,0 +1,51 @@
+version: "3.8"
+
+services:
+  rdb:
+    image: postgres:16-alpine
+    container_name: postgres01
+    env_file:
+      - rdb.env
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: "1024M"
+    networks:
+      - mynet
+    ports:
+      - 5432:5432
+    volumes:
+      - ./rdb:/var/lib/postgresql/data
+      - ./rdb_init.sql:/docker-entrypoint-initdb.d/rdb_init.sql
+    labels:
+      - "hostname=postgres"
+    restart: on-failure
+    stdin_open: true
+    tty: true
+
+  cachedb:
+    image: redis:7-alpine
+    container_name: redis01
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: "512M"
+    networks:
+      - mynet
+    ports:
+      - 6379:6379
+    volumes:
+      - ./cachedb:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+    labels:
+      - "hostname=redis"
+    restart: always
+    stdin_open: true
+    tty: true
+
+networks:
+  mynet:
+    external: true

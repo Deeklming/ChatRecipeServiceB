@@ -6,6 +6,11 @@ YourAccommodation 은 숙박 예약 프로젝트입니다
 
 <br>
 
+## 개발 기간
+
+
+<br>
+
 ## View
 
 <br>
@@ -24,7 +29,7 @@ YourAccommodation 은 숙박 예약 프로젝트입니다
 
 <br>
 
-## 2. 개발 환경
+## 2. 개발 환경 및 세팅
 ```
 각각의 프레임워크로 같은 기능을 개발합니다
 ```
@@ -48,30 +53,55 @@ itsdangerous==2.1.2
 Jinja2==3.1.3
 Mako==1.3.2
 MarkupSafe==2.1.5
+psycopg==3.1.18
+psycopg-binary==3.1.18
+psycopg-pool==3.2.1
 python-dotenv==1.0.1
 SQLAlchemy==2.0.26
 typing_extensions==4.9.0
+tzdata==2024.1
 Werkzeug==3.0.1
 WTForms==3.1.2
 ```
 
 ### 2-2. Django
-
 - Django
 
 ### 2-3. FastAPI
-
 - FastAPI
 
 ### 2-4. Next.js
-
 - Next.js
 
-### 2-5. common
+### 2-5. Docker
+```bash
+# 커스텀 네트워크 미리 생성
+docker network create --driver=bridge --subnet=172.55.0.0/24 --ip-range=172.55.0.0/24 --gateway=172.55.0.1 mynet
 
-- Docker
+# 실행
+docker-compose up -d
+
+# 종료
+docker-compose down
+```
+```
+docker-compose.yml
+```
+
 - Redis
+```
+cachedb/
+redis.conf
+```
+
 - PostgreSQL
+```
+rdb/
+rdb.env
+rdb_init.sql
+```
+
+### 2-6. common
 - React
 - TailwindCSS
 

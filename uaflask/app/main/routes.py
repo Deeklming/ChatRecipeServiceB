@@ -5,4 +5,4 @@ from flask import jsonify
 
 @bp.route('/', methods=['GET'])
 def index():
-    return jsonify({"test": "ok"})
+    return jsonify({"test": "ok!!"})
