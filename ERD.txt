@@ -1,0 +1,81 @@
+ERD
+Table profiles {
+  user_id uuid [PK, note: 'FK']
+  image image [null]
+  nationality char [null, note: '2byte']
+  like json [null, note: '{post id : score(float)}']
+  clip array [null]
+  follow array [null]
+  comment array [null]
+  accommodation array [null]
+}
+
+Table users {
+  id uuid [primary key]
+  email varchar [not null, unique]
+  name varchar [not null, unique]
+  password char [not null]
+  password_last json [not null, note: '{last password : updated at}']
+  business bool [not null]
+  updated_at timestamp [not null]
+  created_at timestamp [not null]
+  deleted_at timestamp [null]
+  status bool [not null, note: 'activate | deactivate']
+}
+
+Table posts {
+  id integer [primary key, increment]
+  author uuid [PK, note: 'FK, business true']
+  title varchar [not null]
+  images json [null]
+  content text [not null]
+  amenity array [null]
+  price float [not null]
+  like_avg_score float [not null]
+  like_count integer [not null]
+  clip_count integer [not null]
+  start_at timestamp [not null]
+  end_at timestamp [not null]
+  checkin timestamp [not null]
+  checkout timestamp [not null]
+  position varchar [null]
+  hashtag array [null]
+  public bool [not null]
+}
+
+Table comments {
+  id integer [primary key, increment]
+  post_id integer [PK, note: 'FK']
+  author uuid [PK, note: 'FK']
+  content text [not null]
+  created_at timestamp [not null]
+  public bool [not null]
+}
+
+Table reservations {
+  id integer [primary key, increment]
+  user_id uuid [PK, note: 'FK']
+  created_at timestamp [not null]
+  head_count integer [not null]
+  checkin timestamp [not null]
+  checkout timestamp [not null]
+  payment_price float [not null]
+}
+
+Table hashtags {
+  id integer [primary key, increment]
+  theme varchar [not null]
+  tag varchar [not null]
+  note varchar [null]
+}
+
+Ref: users.id - profiles.user_id
+Ref: users.id < posts.author
+Ref: users.id < reservations.user_id
+Ref: users.id < comments.author
+Ref: posts.id < comments.post_id
+
+NoSQL
+Session
+Login Fail Info (count, at)
+Chatting
