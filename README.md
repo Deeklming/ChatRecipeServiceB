@@ -127,8 +127,7 @@ rdb_init.sql
 ## 4. 프로젝트 설계
 
 ### 4-1. ERD
-
-<!-- ![YourAccommodation ERD]() -->
+![YourAccommodation ERD](https://github.com/Deeklming/YourAccommodation/assets/71743128/435740df-bb87-48c6-85b4-0ce049506718)
 
 ### 4-2. Infra Architecture
 
