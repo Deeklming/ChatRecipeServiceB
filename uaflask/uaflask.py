@@ -1,5 +1,5 @@
 from app import create_app, db
-from config import env
+from config import env, r
 import sqlalchemy as sa
 import sqlalchemy.orm as sao
 import ssl
@@ -12,6 +12,7 @@ def make_shell_context():
     return {'db': db, 'sa': sa, 'sao': sao}
 
 if __name__ == "__main__":
+    print(' * Redis connection!:', r.ping())
     ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
     ssl_context.load_cert_chain(certfile=env('CERTFILE'), keyfile=env('KEYFILE'))
     app.run(host=env('HOST'), port=env('PORT'), ssl_context=ssl_context)
