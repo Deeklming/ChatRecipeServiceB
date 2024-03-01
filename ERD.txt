@@ -1,5 +1,6 @@
 ERD
 Table profiles {
+  id integer [primary key, increment]
   user_id uuid [PK, note: 'FK']
   image image [null]
   nationality char [null, note: '2byte']
@@ -74,6 +75,7 @@ Ref: users.id < posts.author
 Ref: users.id < reservations.user_id
 Ref: users.id < comments.author
 Ref: posts.id < comments.post_id
+
 
 NoSQL
 Session
