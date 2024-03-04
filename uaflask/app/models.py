@@ -3,14 +3,13 @@ import sqlalchemy.orm as sao
 import hashlib
 import re
 import uuid
-from flask_login import UserMixin
 from email_validator import validate_email, EmailNotValidError, caching_resolver
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from decimal import Decimal
-from app import db, login
+from app import db
 
 
-class Users(UserMixin, db.Model):
+class Users(db.Model):
     id: sao.Mapped[uuid.UUID] = sao.mapped_column(sa.Uuid, primary_key=True, index=True)
     email: sao.Mapped[str] = sao.mapped_column(sa.VARCHAR(128), unique=True)
     name: sao.Mapped[str] = sao.mapped_column(sa.VARCHAR(30), unique=True)
@@ -32,7 +31,11 @@ class Users(UserMixin, db.Model):
     def check_password(self, pw: str):
         return self.password == self.digest_password(pw)
     
-    def validate_signup_email(self, e: str):
+    def validate_id(self, n: str, e: str):
+        # 유저 이름 검증
+        if not re.compile('^(?=.*[\\w])[\\w]{2,30}$').search(n):
+            return (False, 'username failed')
+        # 이메일 검증
         try:
             emailinfo = validate_email(e, check_deliverability=True, dns_resolver=caching_resolver(timeout=5))
             email = emailinfo.normalized
@@ -41,6 +44,7 @@ class Users(UserMixin, db.Model):
         except EmailNotValidError as err:
             print(err)
             print(str(err))
+        return (True, 'id success')
 
     def validate_signin_email(self, e: str):
         try:
@@ -71,7 +75,7 @@ class Users(UserMixin, db.Model):
         for x in ptrn:
             if x:
                 return (False, 'easy pattern')
-        return (True, 'success')
+        return (True, 'password success')
 
 
 class Profiles(db.Model):
@@ -150,7 +154,3 @@ class Hashtags(db.Model):
     
     def __repr__(self):
         return f'<Hashtag {self.tag}>'
-
-@login.user_loader
-def load_user(id):
-    return db.session.get(Users, id)

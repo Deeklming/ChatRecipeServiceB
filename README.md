@@ -39,17 +39,18 @@ YourAccommodation 은 숙박 예약 프로젝트입니다
 ### 2-1. Flask
 ```
 alembic==1.13.1
+async-timeout==4.0.3
 blinker==1.7.0
 click==8.1.7
 colorama==0.4.6
 dnspython==2.5.0
 email-validator==2.1.0.post1
 Flask==3.0.2
-Flask-Login==0.6.3
 Flask-Migrate==4.0.5
 Flask-SQLAlchemy==3.1.1
 Flask-WTF==1.2.1
 greenlet==3.0.3
+hiredis==2.3.2
 idna==3.6
 itsdangerous==2.1.2
 Jinja2==3.1.3
@@ -59,6 +60,7 @@ psycopg==3.1.18
 psycopg-binary==3.1.18
 psycopg-pool==3.2.1
 python-dotenv==1.0.1
+redis==5.0.2
 SQLAlchemy==2.0.26
 typing_extensions==4.9.0
 tzdata==2024.1
