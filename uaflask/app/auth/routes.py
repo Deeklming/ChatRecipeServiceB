@@ -24,6 +24,9 @@ def login():
         # 유저 없음
         if not user:
             raise Exception('user not exists')
+        # 비활성 유저
+        if user.status == False:
+            raise Exception('inert user')
         # 패스워드 확인
         check = Users.check_password(req["password"])
         if not check:
@@ -69,6 +72,7 @@ def create_user():
         # 유저 이미 있음
         if user:
             raise Exception('user already exists')
+        # 유저 생성
         hash_pw = Users.digest_password(req["password"])
         new_user = Users(email=req["email"], name=req["name"], password=hash_pw)
         new_user.password_last = {datetime.today().strftime('%Y-%m-%d'):hash_pw}
@@ -83,42 +87,52 @@ def create_user():
     return jsonify(res)
 
 
-# @bp.route('/update_user', methods=['GET', 'POST'])
-# def update_user():
-    # if not current_user.is_authenticated:
-    #     return funcs.result_redirect('로그인해주세요', 'auth.login')
-    
-    # form = UpdateUserForm()
-    # if request.method == 'GET':
-    #     return render_template('auth/update_user.html', form=form)
-    
-    # if form.password.data != form.password_check.data:
-    #     return funcs.result_redirect('패스워드가 다름', 'auth.update_user')
-    
-    # if form.validate_on_submit(): #post submit 했을 경우
-    #     try:
-    #         user = db.session.scalar(sa.select(Users).where(Users.name == current_user.name))
-    #         if user is None:
-    #             return funcs.result_redirect('해당 유저가 없음', 'auth.update_user')
-            
-    #         if user.name == 'root':
-    #             return funcs.result_redirect('수정 불가 유저', 'auth.update_user')
-            
-    #         is_valid, msg = user.validate_password(form.password.data) #패스워드 검증
-    #         if not is_valid:
-    #             return funcs.result_redirect(msg, 'auth.update_user')
-            
-    #         user.digest_password(form.password.data)
-    #         user.login_fail_count = 0
-    #         used_pw = UsedPassword(used_password=user.password, user=user)
-    #         db.session.add(used_pw)
-    #         db.session.commit()
-
-    #         return funcs.result_redirect(f'{user.name} 패스워드 변경 성공', 'main.index')
-    #     except DataError as e:
-    #         print(e) #log
-    #         return funcs.result_redirect('계정 업데이트 실패', 'auth.update_user')
-    # return funcs.result_redirect('업데이트 기타 이상 감지', 'auth.update_user')
+@bp.route('/update_user', methods=['POST'])
+def update_user():
+    try:
+        req = request.get_json()
+        res = {}
+        # req가 비었을 때
+        if not req:
+            raise Exception('empty request')
+        # 로그인 확인
+        if not f.login_required(req['name']):
+            raise Exception('required login')
+        user = db.session.scalar(sa.select(Users).where(Users.email == req["email"] or Users.name == req["name"]))
+        # 유저가 없으면
+        if not user:
+            raise Exception('no exists user')
+        # 비활성 유저
+        if user.status == False:
+            raise Exception('inert user')
+        # 아이디, 패스워드 검증
+        check, reason = Users.validate_id(req["name"], req["email"])
+        if not check:
+            raise Exception(reason)
+        check, reason = Users.validate_password(req["password"])
+        if not check:
+            raise Exception(reason)
+        # 유저 수정
+        last_user = user.name
+        hash_pw = Users.digest_password(req["password"])
+        user.email = req["email"]
+        user.name = req["name"]
+        user.password = hash_pw
+        user.password_last[f"{datetime.today().strftime('%Y-%m-%d')}"] = hash_pw
+        user.business = req["business"]
+        user.updated_at = datetime.now(timezone.utc)
+        db.session.commit()
+        # 세션 업데이트
+        r.delete(last_user)
+        session = hashlib.sha256(f'{user.name}{datetime.now(timezone(timedelta(hours=9)))}'.encode()).hexdigest()
+        r.set(user.name, session, ex=3600*24)
+        res['status'] = 'success'
+        res['data'] = 'create user'
+    except Exception as err:
+        print(err)
+        res['status'] = 'error'
+        res['data'] = err
+    return jsonify(res)
 
 
 # @bp.route('/delete_user', methods=['GET', 'POST'])
