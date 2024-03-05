@@ -4,7 +4,7 @@ from datetime import datetime, timezone, timedelta
 import sqlalchemy as sa
 import hashlib
 from app import db, functions as f
-from app.models import Users
+from app.models import Users, Profiles
 from sqlalchemy.exc import SQLAlchemyError, DataError
 from config import r
 
@@ -77,6 +77,9 @@ def create_user():
         new_user = Users(email=req["email"], name=req["name"], password=hash_pw)
         new_user.password_last = {datetime.today().strftime('%Y-%m-%d'):hash_pw}
         db.session.add(new_user)
+        nationality = req["nationality"] if req["nationality"] else "ko"
+        profile = Profiles(r_user=user, nationality=nationality)
+        db.session.add(profile)
         db.session.commit()
         res['status'] = 'success'
         res['data'] = 'create user'
@@ -127,7 +130,7 @@ def update_user():
         session = hashlib.sha256(f'{user.name}{datetime.now(timezone(timedelta(hours=9)))}'.encode()).hexdigest()
         r.set(user.name, session, ex=3600*24)
         res['status'] = 'success'
-        res['data'] = 'create user'
+        res['data'] = 'update user'
     except Exception as err:
         print(err)
         res['status'] = 'error'
@@ -135,47 +138,37 @@ def update_user():
     return jsonify(res)
 
 
-# @bp.route('/delete_user', methods=['GET', 'POST'])
-# def delete_user():
-#     if not current_user.is_authenticated:
-#         return funcs.result_redirect('로그인해주세요', 'auth.login')
-    
-#     form = DeleteUserForm()
-#     if request.method == 'GET':
-#         return render_template('auth/delete_user.html', form=form)
-    
-#     if form.validate_on_submit():
-#         try:
-#             user = db.session.scalar(sa.select(Users).where(Users.name == form.username.data))
-#             if user is None:
-#                 return funcs.result_redirect('해당 유저가 없음', 'auth.delete_user')
-
-#             if user.name == 'root':
-#                 return funcs.result_redirect('삭제 불가 유저', 'auth.delete_user')
-
-#             db.session.delete(user)
-#             db.session.commit()
-#             flash(f'{form.username.data} 유저 삭제 성공')
-#             if current_user.name == form.username.data: #본인이면 여기
-#                 return redirect(url_for('auth.logout'))
-#             return redirect(url_for('main.index'))
-#         except DataError as e:
-#             print(e) #log
-#             return funcs.result_redirect('계정 삭제 실패', 'auth.delete_user')
-#     return funcs.result_redirect('딜리트 기타 이상 감지', 'auth.delete_user')
-
-
-# @bp.get('/show_users')
-# def show_users():
-#     if not current_user.is_authenticated:
-#         return funcs.result_redirect('로그인해주세요', 'auth.login')
-    
-#     try:
-#         query = Users.query.all()
-#         users = [u.name for u in query]
-#         return render_template('auth/show_users.html', users=users)
-#     except Exception as e:
-#         return funcs.result_redirect('목록 로딩 실패', 'main.index')
+@bp.route('/delete_user', methods=['POST'])
+def delete_user():
+    try:
+        req = request.get_json()
+        res = {}
+        # req가 비었을 때
+        if not req:
+            raise Exception('empty request')
+        # 로그인 확인
+        if not f.login_required(req['name']):
+            raise Exception('required login')
+        user = db.session.scalar(sa.select(Users).where(Users.email == req["email"] or Users.name == req["name"]))
+        # 유저가 없으면
+        if not user:
+            raise Exception('no exists user')
+        # 비활성 유저
+        if user.status == False:
+            raise Exception('inert user')
+        # 유저 삭제
+        last_user = user.name
+        db.session.delete(user)
+        db.session.commit()
+        # 세션 삭제
+        r.delete(last_user)
+        res['status'] = 'success'
+        res['data'] = 'delete user'
+    except Exception as err:
+        print(err)
+        res['status'] = 'error'
+        res['data'] = err
+    return jsonify(res)
 
 
 @bp.get('/logout')
@@ -193,6 +186,104 @@ def logout():
             raise Exception('logout failure')
         res['status'] = 'success'
         res['data'] = 'logout'
+    except Exception as err:
+        print(err)
+        res['status'] = 'error'
+        res['data'] = err
+    return jsonify(res)
+
+
+@bp.route('/update_profile', methods=['POST'])
+def update_profile():
+    try:
+        req = request.get_json()
+        res = {}
+        # req가 비었을 때
+        if not req:
+            raise Exception('empty request')
+        # 로그인 확인
+        if not f.login_required(req['name']):
+            raise Exception('required login')
+        user = db.session.scalar(sa.select(Users).where(Users.email == req["email"] or Users.name == req["name"]))
+        # 유저가 없으면
+        if not user:
+            raise Exception('no exists user')
+        # 비활성 유저
+        if user.status == False:
+            raise Exception('inert user')
+        # 프로필 수정
+        user.r_profile.image = req['image']
+        user.r_profile.nationality = req["nationality"]
+        # user.r_profile.like = 
+        user.r_profile.accommodation.append(req["accommodation"])
+        user.r_profile.clip.append(req["clip"])
+        user.r_profile.follow.append(req["follow"])
+        user.r_profile.comment.append(req["comment"])
+        db.session.commit()
+        res['status'] = 'success'
+        res['data'] = 'update profile'
+    except Exception as err:
+        print(err)
+        res['status'] = 'error'
+        res['data'] = err
+    return jsonify(res)
+
+
+@bp.route('/get_user_info', methods=['GET'])
+def get_user_info():
+    try:
+        req = request.get_json()
+        res = {}
+        # req가 비었을 때
+        if not req:
+            raise Exception('empty request')
+        # 로그인 확인
+        if not f.login_required(req['name']):
+            raise Exception('required login')
+        user = db.session.scalar(sa.select(Users).where(Users.email == req["email"] or Users.name == req["name"]))
+        # 유저가 없으면
+        if not user:
+            raise Exception('no exists user')
+        # 비활성 유저
+        if user.status == False:
+            raise Exception('inert user')
+        # 유저 정보
+        info = {}
+        for x in req['user']:
+            match x:
+                case 'email':
+                    info["email"] = user.email
+                case 'name':
+                    info["name"] = user.name
+                case 'business':
+                    info["business"] = user.business
+                case 'updated_at':
+                    info["updated_at"] = user.updated_at
+                case 'created_at':
+                    info["created_at"] = user.created_at
+                case 'deleted_at':
+                    info["deleted_at"] = user.deleted_at
+                case 'status':
+                    info["status"] = user.status
+        for x in req['profile']:
+            match x:
+                case 'image':
+                    info["image"] = user.r_profile.image
+                case 'nationality':
+                    info["nationality"] = user.r_profile.nationality
+                case 'like':
+                    info["like"] = user.r_profile.like
+                case 'accommodation':
+                    info["accommodation"] = user.r_profile.accommodation
+                case 'clip':
+                    info["clip"] = user.r_profile.clip
+                case 'follow':
+                    info["follow"] = user.r_profile.follow
+                case 'comment':
+                    info["comment"] = user.r_profile.comment
+        res['status'] = 'success'
+        res['data'] = 'get user info'
+        res['info'] = info
     except Exception as err:
         print(err)
         res['status'] = 'error'

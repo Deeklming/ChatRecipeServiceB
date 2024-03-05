@@ -12,7 +12,7 @@ from app import db
 class Users(db.Model):
     id: sao.Mapped[uuid.UUID] = sao.mapped_column(sa.Uuid, primary_key=True, index=True)
     email: sao.Mapped[str] = sao.mapped_column(sa.VARCHAR(128), unique=True)
-    name: sao.Mapped[str] = sao.mapped_column(sa.VARCHAR(30), unique=True)
+    name: sao.Mapped[str] = sao.mapped_column(sa.VARCHAR(20), unique=True)
     password: sao.Mapped[str] = sao.mapped_column(sa.CHAR(128))
     password_last: sao.Mapped[dict] = sao.mapped_column(sa.JSON)
     business: sao.Mapped[bool] = sao.mapped_column(sa.BOOLEAN, default=False)
@@ -33,7 +33,7 @@ class Users(db.Model):
     
     def validate_id(self, n: str, e: str):
         # 유저 이름 검증
-        if not re.compile('^(?=.*[\\w])[\\w]{2,30}$').search(n):
+        if not re.compile('^(?=.*[\\w])[\\w]{2,20}$').search(n):
             return (False, 'username failed')
         # 이메일 검증
         try:
@@ -81,13 +81,13 @@ class Users(db.Model):
 class Profiles(db.Model):
     id: sao.Mapped[int] = sao.mapped_column(primary_key=True, index=True)
     user_id: sao.Mapped[uuid.UUID] = sao.mapped_column(sa.Uuid, sa.ForeignKey(Users.id, ondelete='CASCADE'))
-    image: sao.Mapped[bytes] = sao.mapped_column(sa.LargeBinary)
+    image: sao.Mapped[str] = sao.mapped_column(sa.VARCHAR(30), nullable=True, default=None)
     nationality: sao.Mapped[str] = sao.mapped_column(sa.CHAR(2))
-    like: sao.Mapped[dict] = sao.mapped_column(sa.JSON)
-    accommodation: sao.Mapped[list] = sao.mapped_column(sa.ARRAY(sa.Integer))
-    clip: sao.Mapped[list] = sao.mapped_column(sa.ARRAY(sa.Integer))
-    follow: sao.Mapped[list] = sao.mapped_column(sa.ARRAY(sa.Uuid))
-    comment: sao.Mapped[list] = sao.mapped_column(sa.ARRAY(sa.Integer))
+    like: sao.Mapped[dict] = sao.mapped_column(sa.JSON, default={})
+    accommodation: sao.Mapped[list] = sao.mapped_column(sa.ARRAY(sa.Integer), default=[])
+    clip: sao.Mapped[list] = sao.mapped_column(sa.ARRAY(sa.Integer), default=[])
+    follow: sao.Mapped[list] = sao.mapped_column(sa.ARRAY(sa.Uuid), default=[])
+    comment: sao.Mapped[list] = sao.mapped_column(sa.ARRAY(sa.Integer), default=[])
     r_user = sao.relationship('Users', back_populates='r_profile', uselist=False)
 
     def __repr__(self):
