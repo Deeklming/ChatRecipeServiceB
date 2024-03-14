@@ -25,44 +25,35 @@ class Users(db.Model):
     def __repr__(self):
         return f'<User {self.name}>'
     
+    def create_uuid():
+        return uuid.uuid4()
+    
     def digest_password(self, pw: str):
-        return hashlib.sha3_256(pw.encode()).hexdigest()
+        return hashlib.sha3_512(pw.encode()).hexdigest()
     
     def check_password(self, pw: str):
         return self.password == self.digest_password(pw)
     
-    def validate_id(self, n: str, e: str):
+    def validate_id(n: str, e: str):
         # 유저 이름 검증
         if not re.compile('^(?=.*[\\w])[\\w]{2,20}$').search(n):
-            return (False, 'username failed')
+            return (False, 'name validate failed')
         # 이메일 검증
         try:
             emailinfo = validate_email(e, check_deliverability=True, dns_resolver=caching_resolver(timeout=5))
             email = emailinfo.normalized
-            print(emailinfo)
-            print(email)
+            return (True, 'id success')
         except EmailNotValidError as err:
             print(err)
-            print(str(err))
-        return (True, 'id success')
-
-    def validate_signin_email(self, e: str):
-        try:
-            emailinfo = validate_email(e, check_deliverability=False)
-            email = emailinfo.normalized
-            print(emailinfo)
-            print(emailinfo.ascii_email)
-            print(email)
-        except EmailNotValidError as err:
-            print(err)
-            print(str(err))
+            return (False, 'email validate failed')
     
     def validate_password(self, pw: str):
         # 현재 및 과거 중복된 PW
         hash_pw = self.digest_password(pw)
-        for x in self.password_last.values():
-            if self.password == hash_pw:
-                return (False, 'overlapping password')
+        if self.password_last:
+            for x in self.password_last.values():
+                if self.password == hash_pw:
+                    return (False, 'overlapping password')
         # 영문자, 숫자, 특수문자 최소 하나씩 8~32자 검증
         r = re.compile('^(?=.*[\\d])(?=.*[a-zA-Z])(?=.*[\\W])[\\S]{8,32}$').fullmatch(pw)
         if not r:

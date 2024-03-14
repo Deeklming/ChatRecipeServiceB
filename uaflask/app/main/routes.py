@@ -7,9 +7,19 @@ from config import r
 def index():
     return jsonify({"connection": "ok!!"})
 
+@bp.get('/getallcache')
+def getallcache():
+    data = {}
+    for k in r.scan_iter():
+        try:
+            data[k] = r.get(k)
+        except:
+            data[k] = r.hgetall(k)
+    print('cache data:', data)
+    return jsonify(data)
+
 @bp.route('/test', methods=['POST'])
 def test():
-    r.flushdb()
     print('---redis-test---')
 
     a = r.get('foo')
@@ -34,6 +44,7 @@ def test():
     print(a, b, c)
     print(type(a), type(b), type(c))
     print(type(c['age']))
+    r.flushdb()
 
     try:
         raise Exception('abc')

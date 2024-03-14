@@ -27,8 +27,11 @@ def login():
         # 비활성 유저
         if user.status == False:
             raise Exception('inert user')
+        # 로그인 확인
+        if f.login_required(req['name']):
+            raise Exception('already login')
         # 패스워드 확인
-        check = Users.check_password(req["password"])
+        check = user.check_password(req["password"])
         if not check:
             if r.get(user.name) == 'stop': # 로그인 멈춤
                 raise Exception('stop login')
@@ -45,11 +48,12 @@ def login():
             if val:
                 if int(val)>=5: # 5회 실패시 5분 멈춤
                     r.set(user.name, 'stop', ex=300)
-                r.incr(user.name)
+                else:
+                    r.incr(user.name)
             else:
                 r.set(user.name, 1, ex=600) # 로그인 실패 횟수 설정
         res['status'] = 'error'
-        res['data'] = err
+        res['data'] = str(err).strip("'")
     return jsonify(res)
 
 
@@ -61,11 +65,8 @@ def create_user():
         # req가 비었을 때
         if not req:
             raise Exception('empty request')
-        # 아이디, 패스워드 검증
+        # 아이디 검증
         check, reason = Users.validate_id(req["name"], req["email"])
-        if not check:
-            raise Exception(reason)
-        check, reason = Users.validate_password(req["password"])
         if not check:
             raise Exception(reason)
         user = db.session.scalar(sa.select(Users).where(Users.email == req["email"] or Users.name == req["name"]))
@@ -73,20 +74,26 @@ def create_user():
         if user:
             raise Exception('user already exists')
         # 유저 생성
-        hash_pw = Users.digest_password(req["password"])
-        new_user = Users(email=req["email"], name=req["name"], password=hash_pw)
+        new_user = Users(id=Users.create_uuid(), email=req["email"], name=req["name"])
+        # 패스워드 검증
+        check, reason = new_user.validate_password(req["password"])
+        if not check:
+            raise Exception(reason)
+        hash_pw = new_user.digest_password(req["password"])
+        new_user.password=hash_pw
         new_user.password_last = {datetime.today().strftime('%Y-%m-%d'):hash_pw}
+        # 프로필 생성
+        profile = Profiles(nationality=req["nationality"])
+        new_user.r_profile.append(profile)
         db.session.add(new_user)
-        nationality = req["nationality"] if req["nationality"] else "ko"
-        profile = Profiles(r_user=user, nationality=nationality)
-        db.session.add(profile)
         db.session.commit()
         res['status'] = 'success'
         res['data'] = 'create user'
     except Exception as err:
-        print(err)
+        print('Error<create_user>:', err)
         res['status'] = 'error'
-        res['data'] = err
+        res['data'] = str(err).strip("'")
+    print('#1###-> ', res)
     return jsonify(res)
 
 
@@ -109,24 +116,27 @@ def update_user():
         if user.status == False:
             raise Exception('inert user')
         # 아이디, 패스워드 검증
-        check, reason = Users.validate_id(req["name"], req["email"])
+        check, reason = Users.validate_id(req["newname"], req["newemail"])
         if not check:
             raise Exception(reason)
-        check, reason = Users.validate_password(req["password"])
+        check, reason = user.validate_password(req["newpassword"])
         if not check:
             raise Exception(reason)
+        # 당일 업데이트 가능 시간 검증
+        now = datetime.now() - timedelta(hours=9) #kr한정
+        if (now - user.updated_at) <= timedelta(minutes=1):
+            raise Exception('can not update today')
         # 유저 수정
-        last_user = user.name
-        hash_pw = Users.digest_password(req["password"])
-        user.email = req["email"]
-        user.name = req["name"]
+        user.email = req["newemail"]
+        user.name = req["newname"]
+        hash_pw = user.digest_password(req["newpassword"])
         user.password = hash_pw
         user.password_last[f"{datetime.today().strftime('%Y-%m-%d')}"] = hash_pw
         user.business = req["business"]
-        user.updated_at = datetime.now(timezone.utc)
+        user.updated_at = now
         db.session.commit()
         # 세션 업데이트
-        r.delete(last_user)
+        r.delete(req["name"])
         session = hashlib.sha256(f'{user.name}{datetime.now(timezone(timedelta(hours=9)))}'.encode()).hexdigest()
         r.set(user.name, session, ex=3600*24)
         res['status'] = 'success'
@@ -134,7 +144,7 @@ def update_user():
     except Exception as err:
         print(err)
         res['status'] = 'error'
-        res['data'] = err
+        res['data'] = str(err).strip("'")
     return jsonify(res)
 
 
@@ -147,8 +157,8 @@ def delete_user():
         if not req:
             raise Exception('empty request')
         # 로그인 확인
-        if not f.login_required(req['name']):
-            raise Exception('required login')
+        # if not f.login_required(req['name']):
+        #     raise Exception('required login')
         user = db.session.scalar(sa.select(Users).where(Users.email == req["email"] or Users.name == req["name"]))
         # 유저가 없으면
         if not user:
@@ -167,7 +177,7 @@ def delete_user():
     except Exception as err:
         print(err)
         res['status'] = 'error'
-        res['data'] = err
+        res['data'] = str(err).strip("'")
     return jsonify(res)
 
 
@@ -189,7 +199,7 @@ def logout():
     except Exception as err:
         print(err)
         res['status'] = 'error'
-        res['data'] = err
+        res['data'] = str(err).strip("'")
     return jsonify(res)
 
 
@@ -225,7 +235,7 @@ def update_profile():
     except Exception as err:
         print(err)
         res['status'] = 'error'
-        res['data'] = err
+        res['data'] = str(err).strip("'")
     return jsonify(res)
 
 
@@ -287,5 +297,5 @@ def get_user_info():
     except Exception as err:
         print(err)
         res['status'] = 'error'
-        res['data'] = err
+        res['data'] = str(err).strip("'")
     return jsonify(res)
