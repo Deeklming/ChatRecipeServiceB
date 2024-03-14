@@ -157,8 +157,8 @@ def delete_user():
         if not req:
             raise Exception('empty request')
         # 로그인 확인
-        # if not f.login_required(req['name']):
-        #     raise Exception('required login')
+        if not f.login_required(req['name']):
+            raise Exception('required login')
         user = db.session.scalar(sa.select(Users).where(Users.email == req["email"] or Users.name == req["name"]))
         # 유저가 없으면
         if not user:
@@ -222,13 +222,22 @@ def update_profile():
         if user.status == False:
             raise Exception('inert user')
         # 프로필 수정
-        user.r_profile.image = req['image']
-        user.r_profile.nationality = req["nationality"]
-        # user.r_profile.like = 
-        user.r_profile.accommodation.append(req["accommodation"])
-        user.r_profile.clip.append(req["clip"])
-        user.r_profile.follow.append(req["follow"])
-        user.r_profile.comment.append(req["comment"])
+        for x, y in req['newprofile'].items():
+            match x:
+                case 'image':
+                    user.r_profile[0].image = y
+                case 'nationality':
+                    user.r_profile[0].nationality = y
+                case 'like':
+                    user.r_profile[0].like = {**user.r_profile[0].like, **y}
+                case 'accommodation':
+                    user.r_profile[0].accommodation = user.r_profile[0].accommodation + [y]
+                case 'clip':
+                    user.r_profile[0].clip = user.r_profile[0].clip + [y]
+                case 'follow':
+                    user.r_profile[0].follow = user.r_profile[0].follow + [y]
+                case 'comment':
+                    user.r_profile[0].comment = user.r_profile[0].comment + [y]
         db.session.commit()
         res['status'] = 'success'
         res['data'] = 'update profile'
@@ -278,21 +287,22 @@ def get_user_info():
         for x in req['profile']:
             match x:
                 case 'image':
-                    info["image"] = user.r_profile.image
+                    info["image"] = user.r_profile[0].image
                 case 'nationality':
-                    info["nationality"] = user.r_profile.nationality
+                    info["nationality"] = user.r_profile[0].nationality
                 case 'like':
-                    info["like"] = user.r_profile.like
+                    info["like"] = user.r_profile[0].like
                 case 'accommodation':
-                    info["accommodation"] = user.r_profile.accommodation
+                    info["accommodation"] = user.r_profile[0].accommodation
                 case 'clip':
-                    info["clip"] = user.r_profile.clip
+                    info["clip"] = user.r_profile[0].clip
                 case 'follow':
-                    info["follow"] = user.r_profile.follow
+                    info["follow"] = user.r_profile[0].follow
                 case 'comment':
-                    info["comment"] = user.r_profile.comment
+                    info["comment"] = user.r_profile[0].comment
         res['status'] = 'success'
         res['data'] = 'get user info'
+        print(info)
         res['info'] = info
     except Exception as err:
         print(err)

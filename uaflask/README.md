@@ -19,3 +19,11 @@ python uaflask.py
 `flask db migrate -m "tagname"` : Model 변경사항을 적용  
 `flask db upgrade` : migrate 한 것을 DBMS에 적용  
 `flask db downgrade` : 이전 migrate로 복귀
+
+## RDB 명령어
+```bash
+psql -U postgres #접속
+```
+`\l` : 데이터베이스 목록
+`\d` : 테이블 확인
+`\c` : 데이터베이스 선택
