@@ -48,7 +48,6 @@ email-validator==2.1.0.post1
 Flask==3.0.2
 Flask-Migrate==4.0.5
 Flask-SQLAlchemy==3.1.1
-Flask-WTF==1.2.1
 greenlet==3.0.3
 hiredis==2.3.2
 idna==3.6
@@ -76,6 +75,7 @@ WTForms==3.1.2
 
 ### 2-4. Next.js
 - Next.js
+- TailwindCSS
 
 ### 2-5. Docker
 ```bash
@@ -104,10 +104,6 @@ rdb/
 rdb.env
 rdb_init.sql
 ```
-
-### 2-6. common
-- React
-- TailwindCSS
 
 <br>
 
@@ -144,7 +140,7 @@ ERD.txt
     - 로그인 / 로그아웃
 - 프로필
     - 유저
-        - 개인코드, 클립, 좋아요, 댓글, 팔로잉 목록
+        - 클립, 좋아요, 댓글, 팔로잉 목록
     - 사업자
         - 숙박 등록 리스트
 - 유저
@@ -157,7 +153,8 @@ ERD.txt
 - 숙박
     - 검색
     - 게시판
-        - 숙박게시글, 평점
+    - 숙박게시글
+    - 댓글
     - 예약
         - 체크인 / 체크아웃, 지역, 최종가격
 - 언어

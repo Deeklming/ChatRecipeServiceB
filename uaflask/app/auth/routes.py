@@ -238,6 +238,20 @@ def update_profile():
                     user.r_profile[0].follow = user.r_profile[0].follow + [y]
                 case 'comment':
                     user.r_profile[0].comment = user.r_profile[0].comment + [y]
+        for x, y in req['delprofile'].items():
+            match x:
+                case 'image':
+                    user.r_profile[0].image = y
+                case 'like':
+                    user.r_profile[0].like = {z1:z2 for z1, z2 in user.r_profile[0].like.items() if z1!=y}
+                case 'accommodation':
+                    user.r_profile[0].accommodation = [z for z in user.r_profile[0].accommodation if z!=y]
+                case 'clip':
+                    user.r_profile[0].clip = [z for z in user.r_profile[0].clip if z!=y]
+                case 'follow':
+                    user.r_profile[0].follow = [z for z in user.r_profile[0].follow if z!=y]
+                case 'comment':
+                    user.r_profile[0].comment = [z for z in user.r_profile[0].comment if z!=y]
         db.session.commit()
         res['status'] = 'success'
         res['data'] = 'update profile'
