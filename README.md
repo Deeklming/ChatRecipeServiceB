@@ -27,7 +27,8 @@ YourAccommodation 은 숙박 예약 프로젝트입니다
 
 ## 1. 링크
 
-<!-- - [1](https://www.notion.so/) -->
+- [Flask](https://flask.palletsprojects.com/en/3.0.x/)
+- [Django](https://www.djangoproject.com/)
 
 <br>
 

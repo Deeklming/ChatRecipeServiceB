@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 import os
+import redis
 from dotenv import load_dotenv
 from pathlib import Path
 
@@ -82,11 +83,17 @@ WSGI_APPLICATION = 'uadjproj.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('RDB_DB'),
+        'USER': env('RDB_USER'),
+        'PASSWORD': env('RDB_PW'),
+        'HOST': env('RDB_HOST'),
+        'PORT': env('RDB_PORT'),
     }
 }
 
+# redis
+R = redis.Redis(host=env('CACHE_HOST'), port=env('CACHE_PORT'), password=env('CACHE_PW'), decode_responses=True, db=0, protocol=3)
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -115,6 +122,8 @@ LANGUAGE_CODE = 'ko-kr'
 TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
+
+USE_L10N = True
 
 USE_TZ = True
 

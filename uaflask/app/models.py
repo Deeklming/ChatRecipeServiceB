@@ -57,7 +57,7 @@ class Users(db.Model):
         # 영문자, 숫자, 특수문자 최소 하나씩 8~32자 검증
         r = re.compile('^(?=.*[\\d])(?=.*[a-zA-Z])(?=.*[\\W])[\\S]{8,32}$').fullmatch(pw)
         if not r:
-            return (False, 'condition check failed')
+            return (False, 'password condition check failed')
         # 특정 패턴 검증
         ptrn = [
             re.compile('(\\w)\\1\\1').findall(pw), #3자 이상 연속된 동일 문자
@@ -65,7 +65,7 @@ class Users(db.Model):
         ]
         for x in ptrn:
             if x:
-                return (False, 'easy pattern')
+                return (False, 'password easy pattern')
         return (True, 'password success')
 
 
