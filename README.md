@@ -129,7 +129,7 @@ rdb_init.sql
 ```
 ERD.txt
 ```
-![YourAccommodation ERD](https://github.com/Deeklming/YourAccommodation/assets/71743128/d751ca01-1bce-403b-82b7-625228113d74)
+![YourAccommodation ERD](https://github.com/Deeklming/YourAccommodation/assets/71743128/dd46b8ef-d49d-420f-9390-defb3039207b)
 
 ### 4-2. Infra Architecture
 
