@@ -140,7 +140,7 @@ class Hashtags(db.Model):
     id: sao.Mapped[int] = sao.mapped_column(primary_key=True, index=True)
     theme: sao.Mapped[str] = sao.mapped_column(sa.VARCHAR(18))
     tag: sao.Mapped[str] = sao.mapped_column(sa.VARCHAR(30))
-    note: sao.Mapped[str] = sao.mapped_column(sa.VARCHAR(100))
+    note: sao.Mapped[str] = sao.mapped_column(sa.VARCHAR(100), nullable=True, default=None)
     
     def __repr__(self):
         return f'<Hashtag {self.tag}>'

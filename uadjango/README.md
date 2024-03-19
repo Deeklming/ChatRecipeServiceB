@@ -12,5 +12,5 @@ openssl req -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -keyout certs/key.pe
 
 ## 실행
 ```bash
-python manage.py runserver --certificate certs/cert.pem --key certs/key.pem
+python manage.py runserver
 ```
