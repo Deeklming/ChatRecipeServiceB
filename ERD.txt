@@ -2,7 +2,7 @@ ERD
 Table profiles {
   id integer [primary key, increment]
   user_id uuid [PK, note: 'FK']
-  image image [null]
+  image varchar [null]
   nationality char [null, note: '2byte']
   like json [null, note: '{post id : score(float)}']
   clip array [null]
@@ -31,14 +31,12 @@ Table posts {
   images json [null]
   content text [not null]
   amenity array [null]
-  price float [not null]
+  price decimal [not null]
   like_avg_score float [not null]
   like_count integer [not null]
   clip_count integer [not null]
-  start_at timestamp [not null]
-  end_at timestamp [not null]
-  checkin timestamp [not null]
-  checkout timestamp [not null]
+  available_start_at timestamp [not null]
+  available_end_at timestamp [not null]
   position varchar [null]
   hashtag array [null]
   public bool [not null]
@@ -56,11 +54,12 @@ Table comments {
 Table reservations {
   id integer [primary key, increment]
   user_id uuid [PK, note: 'FK']
+  post_id integer [PK, note: 'FK']
   created_at timestamp [not null]
   head_count integer [not null]
   checkin timestamp [not null]
   checkout timestamp [not null]
-  payment_price float [not null]
+  payment_price decimal [not null]
 }
 
 Table hashtags {
@@ -75,6 +74,7 @@ Ref: users.id < posts.author
 Ref: users.id < reservations.user_id
 Ref: users.id < comments.author
 Ref: posts.id < comments.post_id
+Ref: posts.id < reservations.post_id
 
 
 NoSQL
