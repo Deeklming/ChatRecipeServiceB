@@ -34,7 +34,7 @@ YourAccommodation 은 숙박 예약 프로젝트입니다
 
 ## 2. 개발 환경 및 세팅
 ```
-각각의 프레임워크로 같은 기능을 개발합니다
+각각의 백엔드 프레임워크는 같은 기능을 개발합니다
 ```
 
 ### 2-1. Flask
@@ -69,16 +69,27 @@ WTForms==3.1.2
 ```
 
 ### 2-2. Django
-- Django
+```
+asgiref==3.7.2
+Django==5.0.3
+djangorestframework==3.14.0
+hiredis==2.3.2
+psycopg==3.1.18
+psycopg-binary==3.1.18
+psycopg-pool==3.2.1
+python-dotenv==1.0.1
+pytz==2024.1
+redis==5.0.3
+sqlparse==0.4.4
+typing_extensions==4.10.0
+tzdata==2024.1
+```
 
-### 2-3. FastAPI
-- FastAPI
-
-### 2-4. Next.js
+### 2-3. Next.js
 - Next.js
 - TailwindCSS
 
-### 2-5. Docker
+### 2-4. Docker
 ```bash
 # 커스텀 네트워크 미리 생성
 docker network create --driver=bridge --subnet=172.55.0.0/24 --ip-range=172.55.0.0/24 --gateway=172.55.0.1 mynet

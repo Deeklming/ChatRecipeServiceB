@@ -2,7 +2,7 @@
 
 ## 설치
 ```bash
-pip install django djangorestframework python-dotenv "psycopg[binary,pool]" "redis[hiredis]"
+pip install django djangorestframework email-validator python-dotenv "psycopg[binary,pool]" "redis[hiredis]"
 ```
 
 ## 인증서 만들기
@@ -13,4 +13,6 @@ openssl req -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -keyout certs/key.pe
 ## 실행
 ```bash
 python manage.py runserver
+python manage.py makemigrations <app name>
+python manage.py migrate
 ```
