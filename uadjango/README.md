@@ -12,7 +12,9 @@ openssl req -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -keyout certs/key.pe
 
 ## 실행
 ```bash
-python manage.py runserver
+django-admin startproject <project name> .
+python manage.py startapp <app name>
 python manage.py makemigrations <app name>
 python manage.py migrate
+python manage.py runserver
 ```
