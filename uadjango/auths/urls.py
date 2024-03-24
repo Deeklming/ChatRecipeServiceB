@@ -4,5 +4,6 @@ from . import views
 app_name = 'auths'
 
 urlpatterns = [
-    # path("", views.Index.as_view(), name='list'),
+    path("users/all/", views.GetAllUsers.as_view(), name='get_all_users'),
+    path("users/create/", views.CreateUser.as_view(), name='create_user'),
 ]

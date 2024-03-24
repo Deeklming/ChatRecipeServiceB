@@ -65,7 +65,7 @@ class Users(models.Model):
 
 class Profiles(models.Model):
     user_id = models.ForeignKey("Users", on_delete=models.CASCADE)
-    image = models.SlugField(max_length=30, null=True, default=None)
+    image = models.URLField(max_length=150, null=True, default=None)
     nationality = models.CharField(max_length=2)
     like = models.JSONField(default=dict)
     accommodation = ArrayField(models.CharField(max_length=30, blank=True), default=list)
