@@ -8,6 +8,7 @@ pip install flask flask-sqlalchemy flask-migrate python-dotenv email-validator "
 ## 인증서 만들기
 ```bash
 openssl req -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -keyout certs/key.pem -out certs/cert.pem
+ssh-keygen -t ed25519 -C "name@name.com"
 ```
 
 ## 실행
